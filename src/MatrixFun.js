@@ -9,7 +9,7 @@ export class MatrixFun {
      * @param {*} squareLength 
      * @returns 
      */
-    getDiagonalIndex(index, squareLength) { return (index + squareLength * (index)) }
+    getDiagonalIndex(index, squareLength) { if(index===undefined || squareLength===undefined){console.error("Missing parameters:index, squarelength ",[index, squareLength])} return (index + squareLength * (index)) }
 
     getAntiDiagonalIndex(index, squareLength) { return ((squareLength - index - 1) + squareLength * index) }
     /**
@@ -33,7 +33,7 @@ export class MatrixFun {
         let maxDiagonal=0;
         let winners =[];
         [...new Array(squareLength)].forEach((_, ind) => {
-            console.debug("CalculateProductForRange", [ind, squareLength, range])
+        //    console.debug("CalculateProductForRange", [ind, squareLength, range])
             let index = getIndex(ind, squareLength);
             let candidates=[];
             let localMax = [...new Array(range)].map((el, counter) => {
@@ -50,7 +50,7 @@ export class MatrixFun {
             }
         });
         console.debug("Candiates", winners);
-        return maxDiagonal;
+        return [maxDiagonal,winners];
     }
     /**
        * Calculates columnwise product for square matrix.

@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import { select } from 'd3-selection';
+import { select, local } from 'd3-selection';
 
 class MatrixTable extends Component {
 
@@ -10,41 +10,70 @@ class MatrixTable extends Component {
         super(props);
     }
 
+    componentDidMount() {
+
+        this.createTable();
+
+    }
+    componentDidUpdate() {
+        this.createTable();
+    }
+
+
     createTable() {
-        const body = d3.select("#page-wrap");
+        let thisState = local();
+        let toBeMarked = this.props.mark;
+        let toBeSpeciallyMarked = this.props.markSpecial;
+        let cData = this.props.data;
 
-        // append a table element to the body
-        const table = body.append("table");
-
-        // append entering rows to the table via data-join (Since selectAll is called on the selected table element, it establishes a new parent node of table instead of the default html)
-        const tr = table.selectAll("tr")
-            .data(this.props.data)
+        let svg = select(this.node);
+        svg.append("g")
+            .selectAll("g")
+            .data(cData)
             .enter()
-            .append("tr");
+            .append("g") //removing
+            .selectAll("text") // these
+            .data(function (d, i, j, k) { thisState.set(this, i); return d }) //lines
+            .enter() //text displays normally
+            .append("text")
+            .text(function (d, i, j) { return d; })
+            .attr("x", function (d, i) { return (i * 40) + 20; })
+            .attr("y", function (d, i) { return (thisState.get(this) * 40) + 40; })
 
-        // append entering cells to each row
-        const td = tr.selectAll("td")
-            .data(function (d) { return d; })
-            .enter()
-            .append("td");
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "20px")
+            .attr("fill", function (d, i) {
+                let needle = thisState.get(this) * 20 + i;
+                let color = "black"
+                if (toBeMarked) {
 
+                    if (toBeMarked.findIndex((el) => el === needle) !== -1) {
+                        color = "Orange";
+                    } else
+                        color = "green";
+                }
 
-        // add content from the dataset
-        const content = td.text(function (d) { return d; });
+                if (toBeSpeciallyMarked) {
+                    if (toBeSpeciallyMarked.findIndex((el) => el === needle) !== -1) {
+                        color = "Red";
+                    }
+                }
 
-        // manipulate colour of specific cells and rows: j is row ,and i is column
-        td.style("color", function (d, i, j) { return (j < 2 && i < 2) ? null : "red"; });
+                return color;
+
+            })
+
 
     }
 
 
     render() {
 
-        return (
-            <div id="page-wrap" ref={node => this.node = node} >  </div>
-        )
+        return <svg ref={node => this.node = node}
+            width={1000} height={1000}>
+        </svg>
     }
-}
 
+}
 
 export default MatrixTable;

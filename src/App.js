@@ -2,6 +2,8 @@ import logo from './logo.svg';
 import './App.css';
 import React from 'react';
 import {MatrixFun} from './MatrixFun.js'
+import MatrixTable from './Matrixtable.js';
+
 class App extends React.Component {
   constructor(props) {
     super(props)
@@ -32,89 +34,44 @@ class App extends React.Component {
     lines.forEach((element, index) => { matrix[index] = element.split(" ").map(str => Number.parseInt(str)) });
     
     var columnlength = matrix[0].length;
-    matrix = matrix.flat();
+    
+    let flattened = matrix.flat();
     
 
-    let mfun = new MatrixFun(matrix);
+    let mfun = new MatrixFun(flattened);
  
     
    
     let diagonalMax= mfun.CalculateProductForRange(columnlength, (colInd, colLength)=>mfun.getDiagonalIndex(colInd, colLength), 4);
+    let diagonalIndexes = [...new Array(20)].map( (el,ind) =>{console.debug("ind ", ind); return mfun.getDiagonalIndex(ind,columnlength)});
+
+ 
+
     let antiDiagonalMax= mfun.CalculateProductForRange(columnlength, (colInd, colLength)=>mfun.getAntiDiagonalIndex(colInd, colLength), 4);
+    let antiDiagonalIndexes = [...new Array(20)].map( (el,ind) =>{console.debug("ind ", ind); return mfun.getAntiDiagonalIndex(ind,columnlength)});
     //let columnMax= mfun.CalculateProductForRange(400, (colInd)=>colInd, 4);
 
     console.debug("Results ", [diagonalMax, antiDiagonalMax]);
 
-    console.debug("rowIndex", mfun.getRowIndexes(20,20));
-    this.state = { data: matrix, columnlength: columnlength };
+    console.debug("diagonalIndexes", diagonalIndexes);
+    this.state = { data: matrix, columnlength: columnlength, found:antiDiagonalMax[1],mark:antiDiagonalIndexes  };
+    
   }
-  
-/**
- * Creates row-wise indexes.
- * (fany implementation, but not sure if it is particular fast or understandable)
- * inspired by Matlab 
- * @param {int} col 
- * @param {int} row 
- * @returns 
- */
-  getRowIndexes(col, row) {
-      let row1= [...Array(col).keys()].map(element=>element*row);
-      return row1.map((element, index)=>row1.map( (el, ind)=>el+index)).flat();
-  }
-
-  getColumnIndexes(size) {
-    return [...Array(size).keys()];
-  }
-
-  /**
-   * Calculates columnwise product for square matrix.
-   * Let the matrix by of the shape NxN, it will return
-   * a matrix in shape if (N/range)XN.
-   * For example, 20x20 will become 5x20.
-   * The matrix returned is flattened.
-   * @param {nXn matrix flattened} matrix 
-   * @param {int} range 
-   * @returns {(n/range)Xn matrix}
-   */
-  calculateColumnwiseProduct(matrix, range) {
-
-    let columns = [];
-    let columWiseProduct = [];
-    matrix.forEach(element => {
-      columns.push(element);
-      if (columns.length === range) {
-        const product = this.calculateProduct(columns);
-        columns = [];
-        columWiseProduct.push(product)
-      }
-    });
-    return columWiseProduct;
-  }
-
-
-  calculateProduct(numbers) {
-    return numbers.reduce((acc, element) => acc * element);
-  }
+   
 
   render() {
 
-    let content = "";
+    let content = <MatrixTable data={this.state.data} mark={this.state.mark} markSpecial={this.state.found}></MatrixTable>
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-        </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {content}
-          </a>
-        </header>
+          
+        
+          
+        
+        <div className="App-body">
+        {content}
+
+        </div>
       </div>
     );
   }
