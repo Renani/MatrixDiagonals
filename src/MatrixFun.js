@@ -33,8 +33,7 @@ export class MatrixFun {
         let maxDiagonal=0;
         let winners =[];
         [...new Array(squareLength)].forEach((_, ind) => {
-        //    console.debug("CalculateProductForRange", [ind, squareLength, range])
-            let index = getIndex(ind, squareLength);
+           
             let candidates=[];
             let localMax = [...new Array(range)].map((el, counter) => {
                     let cInd=getIndex(ind + counter,squareLength);
@@ -49,7 +48,7 @@ export class MatrixFun {
                 winners=candidates;
             }
         });
-        console.debug("Candiates", winners);
+        
         return [maxDiagonal,winners];
     }
     /**
