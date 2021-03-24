@@ -1,4 +1,4 @@
-class MatrixFun {
+export class MatrixFun {
     constructor(matrix) {
         this.matrix = matrix;
     }
@@ -6,12 +6,12 @@ class MatrixFun {
     /** 0-19
      * Sum(j and i)
      * @param {*} currentIndex 
-     * @param {*} columnlength 
+     * @param {*} squareLength 
      * @returns 
      */
-    getDiagonalIndex(index, columnlength) { return (index + columnlength * (index)) }
+    getDiagonalIndex(index, squareLength) { return (index + squareLength * (index)) }
 
-    getAntiDiagonalIndex(index, columnLength) { return ((columnLength - index - 1) + columnLength * index) }
+    getAntiDiagonalIndex(index, squareLength) { return ((squareLength - index - 1) + squareLength * index) }
     /**
      * Creates row-wise indexes.
      * (fany implementation, but not sure if it is particular fast or understandable)
@@ -29,16 +29,28 @@ class MatrixFun {
         return [...Array(size).keys()];
     }
 
-    CalculateProductForRange(columnLength, getIndex, range) {
-        [...new Array(columnLength)].forEach((_, ind) => {
-            let index = getIndex(ind, columnlength);
+    CalculateProductForRange(squareLength, getIndex, range) {
+        let maxDiagonal=0;
+        let winners =[];
+        [...new Array(squareLength)].forEach((_, ind) => {
+            console.debug("CalculateProductForRange", [ind, squareLength, range])
+            let index = getIndex(ind, squareLength);
+            let candidates=[];
+            let localMax = [...new Array(range)].map((el, counter) => {
+                    let cInd=getIndex(ind + counter,squareLength);
+                    candidates.push(cInd);
+                    return this.matrix[cInd];
+                }
+                )
+                    .reduce((acc, el) => acc * el);
 
-            let localMax = [...new Array(range)].map((el, counter) => matrix[index + counter]).reduce((acc, el) => acc * el);
-
-            if (localMax < maxDiagonal) {
+            if (localMax > maxDiagonal) {
                 maxDiagonal = localMax;
+                winners=candidates;
             }
         });
+        console.debug("Candiates", winners);
+        return maxDiagonal;
     }
     /**
        * Calculates columnwise product for square matrix.

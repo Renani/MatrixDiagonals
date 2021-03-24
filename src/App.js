@@ -1,8 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import React from 'react';
-import np from 'numjs';
-
+import {MatrixFun} from './MatrixFun.js'
 class App extends React.Component {
   constructor(props) {
     super(props)
@@ -34,31 +33,22 @@ class App extends React.Component {
     
     var columnlength = matrix[0].length;
     matrix = matrix.flat();
-    let maxDiagonal=0;
-    [...new Array(columnlength)].forEach((_,ind) => {
-       let index = this.getDiagonalIndex(ind, columnlength);
-       
-       let localMax =[...new Array(1)].map((el, counter)=>matrix[index+counter]).reduce((acc,el)=>acc*el);
-       console.log("localMax", localMax); 
-       if(localMax>maxDiagonal){
-         maxDiagonal = localMax;
-       }
-    });
+    
 
-    console.debug("diagonalMax", maxDiagonal);
-    //keeping the data un-linearized due to visualization
+    let mfun = new MatrixFun(matrix);
+ 
+    
+   
+    let diagonalMax= mfun.CalculateProductForRange(columnlength, (colInd, colLength)=>mfun.getDiagonalIndex(colInd, colLength), 4);
+    let antiDiagonalMax= mfun.CalculateProductForRange(columnlength, (colInd, colLength)=>mfun.getAntiDiagonalIndex(colInd, colLength), 4);
+    //let columnMax= mfun.CalculateProductForRange(400, (colInd)=>colInd, 4);
 
+    console.debug("Results ", [diagonalMax, antiDiagonalMax]);
+
+    console.debug("rowIndex", mfun.getRowIndexes(20,20));
     this.state = { data: matrix, columnlength: columnlength };
   }
-  /** 0-19
-   * Sum(j and i)
-   * @param {*} currentIndex 
-   * @param {*} columnlength 
-   * @returns 
-   */
-  getDiagonalIndex(index, columnlength) { return (index + columnlength * (index)) }
-
-  getAntiDiagonalIndex(index, columnLength) { return ((columnLength - index - 1) + columnLength * index) }
+  
 /**
  * Creates row-wise indexes.
  * (fany implementation, but not sure if it is particular fast or understandable)
