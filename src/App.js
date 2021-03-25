@@ -1,10 +1,18 @@
-import logo from './logo.svg';
+
 import './App.css';
+import 'semantic-ui-css/semantic.min.css'
 import React from 'react';
 import {MatrixFun} from './MatrixFun.js'
 import MatrixTable from './Matrixtable.js';
-
+import MatrixVisualization from './MatrixVisualization'
+import {
+  Grid,
+  Menu,
+  Container,
+  Segment
+} from 'semantic-ui-react';
 class App extends React.Component {
+  
   constructor(props) {
     super(props)
     let text = "08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08\n" +
@@ -30,47 +38,148 @@ class App extends React.Component {
 
     let lines = text.replace('"', "").split("\n");
 
-    let matrix = [];
+    const matrix = [];
     lines.forEach((element, index) => { matrix[index] = element.split(" ").map(str => Number.parseInt(str)) });
     
-    var columnlength = matrix[0].length;
+    const columnlength = matrix[0].length;
     
-    let flattened = matrix.flat();
+    const flattened = matrix.flat();
     
-
-    let mfun = new MatrixFun(flattened);
+    const mfun = new MatrixFun(flattened);
+    //Calculating diagional
+    let diagonal = this.calculateDiagonal(columnlength, mfun);
+    //creating view for Diagonal
+    let content = MatrixVisualization.getDiagonalContent(diagonal, columnlength, matrix,mfun, this.calculateDiagonal);
+    const diagonalContent = content[0];
+    const diagonalExplanation = content[1];
+    
+    //Calculating antidiagonal
+    const antiDiagonal = this.calculateAntidiagonal(columnlength, mfun);
+    //Creating view for antidiagonals
+    content =MatrixVisualization.getAntiDiagonalContent(antiDiagonal, columnlength, matrix, mfun, this.calculateAntidiagonal);
+    const antiDiagonalContent = content [0];
+    const antiDiagonalExplanation = content [1];
  
-    
-   
-    let diagonalMax= mfun.CalculateProductForRange(columnlength, (colInd, colLength)=>mfun.getDiagonalIndex(colInd, colLength), 4);
-    let diagonalIndexes = [...new Array(20)].map( (el,ind) =>{console.debug("ind ", ind); return mfun.getDiagonalIndex(ind,columnlength)});
+    let rowIndex= mfun.getRowIndexes(20,20);
+    const rowResult =[];
+    [...new Array(columnlength)].forEach ( (_, offset)=>
+        rowResult.push(mfun.CalculateProductForRange(columnlength, (colInd, colLength)=>(rowIndex[colInd] + offset ) , 4))
+    )
 
- 
+    console.debug("rowIndexes", rowResult);
 
-    let antiDiagonalMax= mfun.CalculateProductForRange(columnlength, (colInd, colLength)=>mfun.getAntiDiagonalIndex(colInd, colLength), 4);
-    let antiDiagonalIndexes = [...new Array(20)].map( (el,ind) =>{console.debug("ind ", ind); return mfun.getAntiDiagonalIndex(ind,columnlength)});
-    //let columnMax= mfun.CalculateProductForRange(400, (colInd)=>colInd, 4);
 
-    console.debug("Results ", [diagonalMax, antiDiagonalMax]);
-
-    console.debug("diagonalIndexes", diagonalIndexes);
-    this.state = { data: matrix, columnlength: columnlength, found:antiDiagonalMax[1],mark:antiDiagonalIndexes  };
+    this.state = { data: matrix, columnlength: columnlength,activeItem:{}, diagonalContent:diagonalContent, diagonalExplanation:diagonalExplanation, antiDiagonalContent:antiDiagonalContent, antiDiagonalExplanation:antiDiagonalExplanation};
     
   }
-   
+  //Althought these methods are short enough to be inlined it is a central part of the logic so it makes sense to seperate them and it could be advantageous for test.
+  calculateDiagonal(columnlength, mfun){
+      let diagonalMax= mfun.CalculateProductForRange(columnlength, (colInd, colLength)=>mfun.getDiagonalIndex(colInd, colLength), 4);
+      return diagonalMax;
+
+  }
+
+  //Althought these methods are short enough to be inlined it is a central part of the logic so it makes sense to seperate them and it could be advantageous for test.
+  calculateAntidiagonal(columnlength, mfun){
+    let antiDiagonal = mfun.CalculateProductForRange(columnlength, (colInd, colLength)=>mfun.getAntiDiagonalIndex(colInd, colLength),4)
+    return antiDiagonal;
+  }
+
+  //React lifecycle method. Ignore
+  componentDidMount () {
+    console.debug("this.menus", this.menues);  
+    this.menues.scrollIntoView();
+    
+  }
+  //React lifecycle method. Ignore
+  componentDidUpdate () {
+    this.menues.scrollIntoView({"behavior":"smooth", "block":"start"});
+  }
+  handleItemClick = (e, { name }) =>{
+    this.setState({ activeItem: name })
+  }
 
   render() {
-
-    let content = <MatrixTable data={this.state.data} mark={this.state.mark} markSpecial={this.state.found}></MatrixTable>
+    let activeItem=this.state.activeItem;
+    let content ="";
+    let explanation ="";
+    switch(activeItem){
+        case "Diagonal":
+            content = this.state.diagonalContent;
+            explanation =this.state.diagonalExplanation;
+        break;
+        case "AntiDiagonal": 
+            content = this.state.antiDiagonalContent
+            explanation =this.state.antiDiagonalExplanation
+            break;
+        }
     return (
       <div className="App">
           
-        
-          
+        <div className="App-header">
+          <h2>M A T R I X</h2>
+        </div>
         
         <div className="App-body">
-        {content}
+       
 
+
+        <Grid columns={2} divided>
+            <Grid.Column>
+            {content}
+              </Grid.Column>
+              
+              <Grid.Column>
+              
+                  {explanation}
+
+              
+              </Grid.Column>
+        </Grid>
+        <div ref={el => this.menues = el}>
+            <Menu attached='bottom' tabular>
+                      <Menu.Item
+                        name='Diagonal'
+                        active={activeItem === 'Diagonal'}
+                        onClick={this.handleItemClick}
+                        
+                      >
+                        Diagonal
+                      </Menu.Item>
+
+                      <Menu.Item
+                        name='AntiDiagonal'
+                        active={activeItem === 'AntiDiagonal'}
+                        onClick={this.handleItemClick}
+                      >
+                        AntiDiagonal
+                      </Menu.Item>
+
+                      <Menu.Item
+                        name='Columnwise'
+                        active={activeItem === 'Columnwise'}
+                        onClick={this.handleItemClick}
+                      >
+                        Columnwise
+                      </Menu.Item>
+
+                      <Menu.Item
+                        name='Rows'
+                        active={activeItem === 'Rows'}
+                        onClick={this.handleItemClick}
+                      >
+                        Rows
+                      </Menu.Item>
+
+                      <Menu.Item
+                        name='Summary'
+                        active={activeItem === 'Summary'}
+                        onClick={this.handleItemClick}
+                      >
+                        Summary
+                      </Menu.Item>
+            </Menu>
+        </div>
         </div>
       </div>
     );
