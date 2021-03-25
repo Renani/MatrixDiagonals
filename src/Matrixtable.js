@@ -1,4 +1,4 @@
-//Based on http://bl.ocks.org/eesur/9937740.
+
 import React, { Component } from 'react';
 import './App.css';
 
@@ -40,7 +40,7 @@ class MatrixTable extends Component {
             .attr("x", function (d, i) { return (i * 40) + 20; })
             .attr("y", function (d, i) { return (thisState.get(this) * 40) + 40; })
 
-            .attr("font-family", "sans-serif")
+            .attr("font-family", "Helvetica")
             .attr("font-size", "20px")
             .attr("fill", function (d, i) {
                 let needle = thisState.get(this) * 20 + i;
@@ -69,9 +69,11 @@ class MatrixTable extends Component {
 
     render() {
 
-        return <svg ref={node => this.node = node}
-            width={1000} height={1000}>
-        </svg>
+        return ( <div class="svg-container">
+                   <svg ref={node => this.node = node} viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet" class="svg-content">
+                 </svg>
+                </div >
+        )
     }
 
 }
