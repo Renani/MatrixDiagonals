@@ -6,7 +6,8 @@ import React, { Component } from 'react';
 import './App.css';
 import MatrixTable from './Matrixtable'
 import {
-    Segment
+    Segment,
+    Grid
 } from 'semantic-ui-react';
 import { MatrixFun } from './MatrixFun.js'
 
@@ -44,8 +45,9 @@ class MatrixVisualization extends Component {
         return [diagonalContent, diagonalExplanation]
     }
 
-    static getRowContent(){
-        
+    static getRowContent(rowResult, matrix){
+       return  rowResult.map((el,ind)=><div><h3>Row number {ind}</h3><MatrixTable key={ind} data={matrix}  markSpecial={el[1]} key={this.activeItem}></MatrixTable></div>);
+
     }
 
 }

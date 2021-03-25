@@ -38,7 +38,7 @@ class MatrixTable extends Component {
             .append("text")
             .text(function (d, i, j) { return d; })
             .attr("x", function (d, i) { return (i * 40) + 20; })
-            .attr("y", function (d, i) { return (thisState.get(this) * 40) + 40; })
+            .attr("y", function (d, i) { return (thisState.get(this) * 40) + 90; })
 
             .attr("font-family", "Helvetica")
             .attr("font-size", "20px")
@@ -70,7 +70,7 @@ class MatrixTable extends Component {
     render() {
 
         return ( <div class="svg-container">
-                   <svg ref={node => this.node = node} viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet" class="svg-content">
+                   <svg ref={node => this.node = node} viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet" className="svg-content">
                  </svg>
                 </div >
         )
