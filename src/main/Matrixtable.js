@@ -1,15 +1,11 @@
 
 import React, { Component } from 'react';
-import './App.css';
+
 
 import { select, local } from 'd3-selection';
 
 class MatrixTable extends Component {
-
-    constructor(props) {
-        super(props);
-    }
-
+ 
     componentDidMount() {
 
         this.createTable();

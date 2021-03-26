@@ -2,15 +2,14 @@
 import './App.css';
 import 'semantic-ui-css/semantic.min.css'
 import React from 'react';
-import { MatrixFun } from './MatrixFun.js'
-import MatrixTable from './Matrixtable.js';
-import MatrixVisualization from './MatrixVisualization'
+import { MatrixFun } from './main/MatrixFun.js'
+
+import MatrixVisualization from './main/MatrixVisualization'
 import {
   Grid,
   Menu,
   Card,
   Image,
-  Icon,
   Container
 } from 'semantic-ui-react';
 class App extends React.Component {
@@ -109,12 +108,13 @@ class App extends React.Component {
 
   }
 
-  //Althought these methods are short enough to be inlined it is a central part of the logic so it makes sense to seperate them and it could be advantageous for test.
+  
   calculateAntidiagonal(columnlength, mfun) {
     let antiDiagonal = mfun.CalculateProductForRange(columnlength, (colInd, colLength) => mfun.getAntiDiagonalIndex(colInd, colLength), 4)
     return antiDiagonal;
   }
-
+  
+  //We are re-using the same calculation method. We only need to adjust the order of iteration.
   calculateRows(squareLength, mfun) {
     let rowIndex = mfun.getRowIndexes(squareLength, squareLength);
     const rowResult = [];
@@ -168,6 +168,7 @@ class App extends React.Component {
       case "Summary":
         content = this.state.summaryContent;
         break;
+      default: content="";
     }
     return (
       <div className="App">
