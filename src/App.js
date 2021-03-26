@@ -63,29 +63,32 @@ class App extends React.Component {
 
     let rowResult = this.calculateRows(columnlength, mfun);
     let rowContent = MatrixVisualization.getMultipleResultsContent(rowResult, matrix);
+    let rowExplanation = MatrixVisualization.getRowExplanation();
 
     let columnResult = this.calculateColumnwise(columnlength, mfun);
     let colContent = MatrixVisualization.getMultipleResultsContent(columnResult, matrix);
+    let colExplanation = MatrixVisualization.getColumnExplanation();
 
-     let maxResult=  [...rowResult.map(el=>el[0]), ...columnResult.map(el=>el[0]), diagonal[0], antiDiagonal[0]].reduce((ac, el)=>ac<el?el:ac);
-    
-    
-    let maxContent =<Container textAlign="center"> <Card>
-    <Image src='https://www.flaticon.com/svg/vstatic/svg/261/261992.svg?token=exp=1616746093~hmac=1da234452297d55dfca6fe21e1ccca32' wrapped ui={false} />
-    <Card.Content>
-      <Card.Header>Max of four</Card.Header>
-      <Card.Meta>
-        <span className='date'>diagonally, antiDiagonally, row-wise and columnwise...</span>
-      </Card.Meta>
-      <Card.Description>
-         {maxResult}
-      </Card.Description>
-    </Card.Content>
-    <Card.Content extra>
-        
-    </Card.Content>
-  </Card>
-  </Container>
+
+    let maxResult = [...rowResult.map(el => el[0]), ...columnResult.map(el => el[0]), diagonal[0], antiDiagonal[0]].reduce((ac, el) => ac < el ? el : ac);
+
+
+    let maxContent = <Container textAlign="center"> <Card>
+      <Image src='https://www.flaticon.com/svg/vstatic/svg/261/261992.svg?token=exp=1616746093~hmac=1da234452297d55dfca6fe21e1ccca32' wrapped ui={false} />
+      <Card.Content>
+        <Card.Header>Max of four</Card.Header>
+        <Card.Meta>
+          <span className='date'>diagonally, antiDiagonally, row-wise and columnwise...</span>
+        </Card.Meta>
+        <Card.Description>
+          {maxResult}
+        </Card.Description>
+      </Card.Content>
+      <Card.Content extra>
+
+      </Card.Content>
+    </Card>
+    </Container>
     this.state = {
       data: matrix,
       columnlength: columnlength,
@@ -95,8 +98,9 @@ class App extends React.Component {
       antiDiagonalContent: antiDiagonalContent,
       antiDiagonalExplanation: antiDiagonalExplanation,
       rowContent: rowContent,
+      rowExplanation: rowExplanation,
       colContent: colContent,
-      columnResult: columnResult,
+      colExplanation: colExplanation,
       summaryContent: maxContent
     };
 
@@ -110,7 +114,7 @@ class App extends React.Component {
    * @param {MatrixFun} mfun 
    * @returns [int max, [...indexes]]
    */
-    calculateDiagonal(columnlength, mfun) {
+  calculateDiagonal(columnlength, mfun) {
     let diagonalMax = mfun.CalculateProductForRange(columnlength, (colInd, colLength) => mfun.getDiagonalIndex(colInd, colLength), 4);
     return diagonalMax;
 
@@ -126,7 +130,7 @@ class App extends React.Component {
     let antiDiagonal = mfun.CalculateProductForRange(columnlength, (colInd, colLength) => mfun.getAntiDiagonalIndex(colInd, colLength), 4)
     return antiDiagonal;
   }
-  
+
   //We are re-using the same product calculation method. We only need to adjust the order of iteration.
   calculateRows(squareLength, mfun) {
     let rowIndex = mfun.getRowIndexes(squareLength, squareLength);
@@ -140,7 +144,7 @@ class App extends React.Component {
   calculateColumnwise(squareLength, mfun) {
     const rowResult = [];
     [...new Array(squareLength)].forEach((_, offset) =>
-      rowResult.push(mfun.CalculateProductForRange(squareLength, (colInd, colLength) => (colInd + (colLength*offset)), 4))
+      rowResult.push(mfun.CalculateProductForRange(squareLength, (colInd, colLength) => (colInd + (colLength * offset)), 4))
     )
     return rowResult;
   }
@@ -174,14 +178,17 @@ class App extends React.Component {
         break;
       case "Rows":
         content = this.state.rowContent;
+        explanation = this.state.rowExplanation;
         break;
       case "Columnwise":
         content = this.state.colContent;
+        explanation = this.state.colExplanation;
         break;
       case "Summary":
         content = this.state.summaryContent;
+        
         break;
-      default: content="";
+      default: content = "";
     }
     return (
       <div className="App">
@@ -194,19 +201,19 @@ class App extends React.Component {
 
 
 
-          <Grid columns={2} divided>
+          <Grid columns={2}  divided doubling stackable>
             <Grid.Column>
               {content}
             </Grid.Column>
 
-            <Grid.Column>
-
+            <Grid.Column >
+            
               {explanation}
-
+              
 
             </Grid.Column>
-          </Grid>
-          <div ref={el => this.menues = el}>
+            <Grid.Column>
+            <div ref={el => this.menues = el}>
             <Menu attached='bottom' tabular>
               <Menu.Item
                 name='Diagonal'
@@ -250,6 +257,10 @@ class App extends React.Component {
                       </Menu.Item>
             </Menu>
           </div>
+
+            </Grid.Column>
+          </Grid>
+        
         </div>
       </div>
     );
