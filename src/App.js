@@ -8,8 +8,10 @@ import MatrixVisualization from './MatrixVisualization'
 import {
   Grid,
   Menu,
-  Container,
-  Segment
+  Card,
+  Image,
+  Icon,
+  Container
 } from 'semantic-ui-react';
 class App extends React.Component {
 
@@ -63,19 +65,41 @@ class App extends React.Component {
     let rowResult = this.calculateRows(columnlength, mfun);
     let rowContent = MatrixVisualization.getRowContent(rowResult, matrix);
 
-    console.debug("rowIndexes", rowResult);
+    let columnResult = this.calculateColumnwise(columnlength, mfun);
+    let colContent = MatrixVisualization.getRowContent(columnResult, matrix);
 
-
-    this.state = { 
-        data: matrix,
-        columnlength: columnlength,
-        activeItem: {},
-        diagonalContent: diagonalContent,
-        diagonalExplanation: diagonalExplanation,
-        antiDiagonalContent: antiDiagonalContent,
-        antiDiagonalExplanation: antiDiagonalExplanation,
-        rowContent: rowContent 
-      };
+     let maxResult=  [...rowResult.map(el=>el[0]), ...columnResult.map(el=>el[0]), diagonal[0], antiDiagonal[0]].reduce((ac, el)=>ac<el?el:ac);
+    
+    
+    let maxContent =<Container textAlign="center"> <Card>
+    <Image src='https://www.flaticon.com/svg/vstatic/svg/261/261992.svg?token=exp=1616746093~hmac=1da234452297d55dfca6fe21e1ccca32' wrapped ui={false} />
+    <Card.Content>
+      <Card.Header>Max of four</Card.Header>
+      <Card.Meta>
+        <span className='date'>diagonally, antiDiagonally, row-wise and columnwise...</span>
+      </Card.Meta>
+      <Card.Description>
+         {maxResult}
+      </Card.Description>
+    </Card.Content>
+    <Card.Content extra>
+        
+    </Card.Content>
+  </Card>
+  </Container>
+    this.state = {
+      data: matrix,
+      columnlength: columnlength,
+      activeItem: {},
+      diagonalContent: diagonalContent,
+      diagonalExplanation: diagonalExplanation,
+      antiDiagonalContent: antiDiagonalContent,
+      antiDiagonalExplanation: antiDiagonalExplanation,
+      rowContent: rowContent,
+      colContent: colContent,
+      columnResult: columnResult,
+      summaryContent: maxContent
+    };
 
   }
   //Althought these methods are short enough to be inlined it is a central part of the logic so it makes sense to seperate them and it could be advantageous for test.
@@ -96,6 +120,14 @@ class App extends React.Component {
     const rowResult = [];
     [...new Array(squareLength)].forEach((_, offset) =>
       rowResult.push(mfun.CalculateProductForRange(squareLength, (colInd, colLength) => (rowIndex[colInd] + offset), 4))
+    )
+    return rowResult;
+  }
+
+  calculateColumnwise(squareLength, mfun) {
+    const rowResult = [];
+    [...new Array(squareLength)].forEach((_, offset) =>
+      rowResult.push(mfun.CalculateProductForRange(squareLength, (colInd, colLength) => (colInd + (colLength*offset)), 4))
     )
     return rowResult;
   }
@@ -129,6 +161,12 @@ class App extends React.Component {
         break;
       case "Rows":
         content = this.state.rowContent;
+        break;
+      case "Columnwise":
+        content = this.state.colContent;
+        break;
+      case "Summary":
+        content = this.state.summaryContent;
         break;
     }
     return (
