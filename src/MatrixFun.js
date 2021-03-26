@@ -29,7 +29,7 @@ export class MatrixFun {
     }
     /**
      * Creates row-wise indexes.
-     * (fany implementation, but not sure if it is particular fast or understandable)
+     * (fany implementation, but not sure if it is particular fast or understandable - probably )
      * inspired by Matlab 
      * @param {int} col 
      * @param {int} row 
@@ -39,11 +39,7 @@ export class MatrixFun {
         return [...Array(col).keys()].map(element => element * row);
       
     }
-
-    getColumnIndexes(size) {
-        return [...Array(size).keys()];
-    }
-
+    
     CalculateProductForRange(squareLength, getIndex, range) {
         let maxDiagonal = 0;
         let winners = [];
@@ -73,31 +69,7 @@ export class MatrixFun {
 
         return [maxDiagonal, winners];
     }
-    /**
-       * Calculates columnwise product for square matrix.
-       * Let the matrix by of the shape NxN, it will return
-       * a matrix in shape if (N/range)XN.
-       * For example, 20x20 will become 5x20.
-       * The matrix returned is flattened.
-       * @param {nXn matrix flattened} matrix 
-       * @param {int} range 
-       * @returns {(n/range)Xn matrix}
-       */
-    calculateColumnwiseProduct(matrix, range) {
-
-        let columns = [];
-        let columWiseProduct = [];
-        matrix.forEach(element => {
-            columns.push(element);
-            if (columns.length === range) {
-                const product = this.calculateProduct(columns);
-                columns = [];
-                columWiseProduct.push(product)
-            }
-        });
-        return columWiseProduct;
-    }
-
+ 
 
     calculateProduct(numbers) {
         return numbers.reduce((acc, element) => acc * element);
