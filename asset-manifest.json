@@ -1,26 +1,26 @@
 {
   "files": {
     "main.css": "/MatrixDiagonals/static/css/main.e0da3c09.chunk.css",
-    "main.js": "/MatrixDiagonals/static/js/main.109a4251.chunk.js",
-    "main.js.map": "/MatrixDiagonals/static/js/main.109a4251.chunk.js.map",
-    "runtime-main.js": "/MatrixDiagonals/static/js/runtime-main.e463c636.js",
-    "runtime-main.js.map": "/MatrixDiagonals/static/js/runtime-main.e463c636.js.map",
+    "main.js": "/MatrixDiagonals/static/js/main.6d597d63.chunk.js",
+    "main.js.map": "/MatrixDiagonals/static/js/main.6d597d63.chunk.js.map",
+    "runtime-main.js": "/MatrixDiagonals/static/js/runtime-main.dc8bd0ce.js",
+    "runtime-main.js.map": "/MatrixDiagonals/static/js/runtime-main.dc8bd0ce.js.map",
     "static/css/2.732ac783.chunk.css": "/MatrixDiagonals/static/css/2.732ac783.chunk.css",
-    "static/js/2.bc023119.chunk.js": "/MatrixDiagonals/static/js/2.bc023119.chunk.js",
-    "static/js/2.bc023119.chunk.js.map": "/MatrixDiagonals/static/js/2.bc023119.chunk.js.map",
-    "static/js/3.0bbecf6b.chunk.js": "/MatrixDiagonals/static/js/3.0bbecf6b.chunk.js",
-    "static/js/3.0bbecf6b.chunk.js.map": "/MatrixDiagonals/static/js/3.0bbecf6b.chunk.js.map",
+    "static/js/2.350551c9.chunk.js": "/MatrixDiagonals/static/js/2.350551c9.chunk.js",
+    "static/js/2.350551c9.chunk.js.map": "/MatrixDiagonals/static/js/2.350551c9.chunk.js.map",
+    "static/js/3.9eb4e7ea.chunk.js": "/MatrixDiagonals/static/js/3.9eb4e7ea.chunk.js",
+    "static/js/3.9eb4e7ea.chunk.js.map": "/MatrixDiagonals/static/js/3.9eb4e7ea.chunk.js.map",
     "index.html": "/MatrixDiagonals/index.html",
     "static/css/2.732ac783.chunk.css.map": "/MatrixDiagonals/static/css/2.732ac783.chunk.css.map",
     "static/css/main.e0da3c09.chunk.css.map": "/MatrixDiagonals/static/css/main.e0da3c09.chunk.css.map",
-    "static/js/2.bc023119.chunk.js.LICENSE.txt": "/MatrixDiagonals/static/js/2.bc023119.chunk.js.LICENSE.txt",
+    "static/js/2.350551c9.chunk.js.LICENSE.txt": "/MatrixDiagonals/static/js/2.350551c9.chunk.js.LICENSE.txt",
     "static/media/semantic.min.css": "/MatrixDiagonals/static/media/outline-icons.ddae9b1b.woff"
   },
   "entrypoints": [
-    "static/js/runtime-main.e463c636.js",
+    "static/js/runtime-main.dc8bd0ce.js",
     "static/css/2.732ac783.chunk.css",
-    "static/js/2.bc023119.chunk.js",
+    "static/js/2.350551c9.chunk.js",
     "static/css/main.e0da3c09.chunk.css",
-    "static/js/main.109a4251.chunk.js"
+    "static/js/main.6d597d63.chunk.js"
   ]
 }
