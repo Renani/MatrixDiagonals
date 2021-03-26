@@ -58,14 +58,12 @@ class MatrixTable extends Component {
                 return color;
 
             })
-
-
     }
 
 
     render() {
 
-        return ( <div class="svg-container">
+        return ( <div className="svg-container">
                    <svg ref={node => this.node = node} viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet" className="svg-content">
                  </svg>
                 </div >
