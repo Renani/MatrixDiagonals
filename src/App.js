@@ -62,10 +62,10 @@ class App extends React.Component {
     const antiDiagonalExplanation = content[1];
 
     let rowResult = this.calculateRows(columnlength, mfun);
-    let rowContent = MatrixVisualization.getRowContent(rowResult, matrix);
+    let rowContent = MatrixVisualization.getMultipleResultsContent(rowResult, matrix);
 
     let columnResult = this.calculateColumnwise(columnlength, mfun);
-    let colContent = MatrixVisualization.getRowContent(columnResult, matrix);
+    let colContent = MatrixVisualization.getMultipleResultsContent(columnResult, matrix);
 
      let maxResult=  [...rowResult.map(el=>el[0]), ...columnResult.map(el=>el[0]), diagonal[0], antiDiagonal[0]].reduce((ac, el)=>ac<el?el:ac);
     
@@ -101,20 +101,33 @@ class App extends React.Component {
     };
 
   }
-  //Althought these methods are short enough to be inlined it is a central part of the logic so it makes sense to seperate them and it could be advantageous for test.
-  calculateDiagonal(columnlength, mfun) {
+  /**
+   *  Method to initate the calculation
+   * Althought these methods are short enough to be inlined 
+   * it is a central part of the logic so it makes 
+   * sense to seperate them and it could be advantageous for test.
+   * @param {int} columnlength 
+   * @param {MatrixFun} mfun 
+   * @returns [int max, [...indexes]]
+   */
+    calculateDiagonal(columnlength, mfun) {
     let diagonalMax = mfun.CalculateProductForRange(columnlength, (colInd, colLength) => mfun.getDiagonalIndex(colInd, colLength), 4);
     return diagonalMax;
 
   }
 
-  
+  /**
+   * Method to initiate calculation of antidiagonal
+   * @param {int} columnlength 
+   * @param {MatrixFun} mfun 
+   * @returns [int max, [...indexes]]
+   */
   calculateAntidiagonal(columnlength, mfun) {
     let antiDiagonal = mfun.CalculateProductForRange(columnlength, (colInd, colLength) => mfun.getAntiDiagonalIndex(colInd, colLength), 4)
     return antiDiagonal;
   }
   
-  //We are re-using the same calculation method. We only need to adjust the order of iteration.
+  //We are re-using the same product calculation method. We only need to adjust the order of iteration.
   calculateRows(squareLength, mfun) {
     let rowIndex = mfun.getRowIndexes(squareLength, squareLength);
     const rowResult = [];
