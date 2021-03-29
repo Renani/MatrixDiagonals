@@ -6,6 +6,9 @@ import React, { Component } from 'react';
 import MatrixTable from './Matrixtable'
 import {
     Segment,
+    Card,
+    Image,
+    Container
 
 } from 'semantic-ui-react';
 
@@ -27,45 +30,47 @@ class MatrixVisualization extends Component {
                                 antidiagonal index finder method defined in <a href="https://github.com/Renani/MatrixDiagonals/blob/master/src/main/MatrixFun.js"> MatrixFun.js</a>;
                                 <pre>{callStack[1]}</pre>
                                 This calculation method calls indexfinder and finds it's adjacent values defined in<a href="https://github.com/Renani/MatrixDiagonals/blob/master/src/main/MatrixFun.js"> MatrixFun.js</a>.
-                                This method is used for all type of iterations:
+                                This method is used for all types of iterations:
                                 <pre>{callStack[2]}</pre>
                                 Seperated the actual Multiplication in a seperate method. I can imagine a situation where there will be need to change this operation. Defined in<a href="https://github.com/Renani/MatrixDiagonals/blob/master/src/main/MatrixFun.js"> MatrixFun.js</a>.
                                 <pre>{callStack[3]}</pre>
-                </Segment>
+        </Segment>
         return [antiDiagonalContent, antiDiagonalExplanation]
     }
 
-static getCallStackForColumnCalculation (){
-    const methodInitiate =  
-`
+    static getCallStackForColumnCalculation() {
+        const methodInitiate =
+            `
 calculateColumnwise(squareLength, mfun) {
     const rowResult = [];
     [...new Array(squareLength)].forEach((_, offset) =>
-      rowResult.push(mfun.CalculateProductForRange(squareLength, (colInd, colLength) => (colInd + (colLength*offset)), 4))
+      rowResult.push(mfun.CalculateProductForRange(squareLength,
+        (colInd, colLength) => (colInd + (colLength*offset)), 4))
     )
     return rowResult;
   }
 `;
-    const methodFinder = undefined;
+        const methodFinder = undefined;
 
-    const commons = this.getCommonMethods();
-    return [methodInitiate, methodFinder, ...commons];
-}
+        const commons = this.getCommonMethods();
+        return [methodInitiate, methodFinder, ...commons];
+    }
 
-static getCallStackForRowCalculation () {
-    const methodInitiate =`
+    static getCallStackForRowCalculation() {
+        const methodInitiate = `
 //We are re-using the same product calculation method. We only need to adjust the order of iteration.
 calculateRows(squareLength, mfun) {
     let rowIndex = mfun.getRowIndexes(squareLength, squareLength);
     const rowResult = [];
     [...new Array(squareLength)].forEach((_, offset) =>
-    rowResult.push(mfun.CalculateProductForRange(squareLength, (colInd, colLength) => (rowIndex[colInd] + offset), 4))
+    rowResult.push(mfun.CalculateProductForRange(squareLength, 
+        (colInd, colLength) => (rowIndex[colInd] + offset), 4))
     )
     return rowResult;
 } 
 `;
 
-    const methodFinder=`
+        const methodFinder = `
 /**
  * Creates row-wise indexes.
  * Parameters
@@ -80,8 +85,8 @@ getRowIndexes(col, row) {
 
 }
  `;
-    let commons = this.getCommonMethods();
-    return [methodInitiate, methodFinder, ...commons];
+        let commons = this.getCommonMethods();
+        return [methodInitiate, methodFinder, ...commons];
     }
 
     static getcallStackForAntiDiagonal() {
@@ -99,7 +104,7 @@ calculateAntidiagonal(columnlength, mfun) {
 }
         `;
 
-        const methodIndexfinder =`
+        const methodIndexfinder = `
 /**
 * Calculates the position of an antidiagonal
 * value for a column index.
@@ -114,7 +119,7 @@ getAntiDiagonalIndex(index, squareLength) {
     return ((squareLength - index - 1) + squareLength * index);
 }
     `;
-       let commons = this.getCommonMethods();
+        let commons = this.getCommonMethods();
         return [methodInitiate, methodIndexfinder, ...commons];
     }
 
@@ -138,7 +143,7 @@ calculateDiagonal(columnlength, mfun) {
     return diagonalMax;
 }`;
 
-    const methodIndexfinder = `
+        const methodIndexfinder = `
 /** 
  * Calculates the position of a diagional value 
  * for a column
@@ -154,12 +159,12 @@ getDiagonalIndex(index, squareLength) {
     return (index + squareLength * index);
 }
 `;
-       const commonMethod = this.getCommonMethods();
-       return [methodInitiate, methodIndexfinder, ...commonMethod]
+        const commonMethod = this.getCommonMethods();
+        return [methodInitiate, methodIndexfinder, ...commonMethod]
     }
     static getCommonMethods() {
-        const methodCalculator = 
-`
+        const methodCalculator =
+            `
 /**
  * This method does the actual calcuation of 
  * product between "range" values.
@@ -210,8 +215,8 @@ return [maxDiagonal, winners];
 }
 `;
 
-        const methodMulti = 
-`
+        const methodMulti =
+            `
 /**
  * Multiplication of array of numbers.
  * @param {Number} numbers 
@@ -222,7 +227,7 @@ return numbers.reduce((acc, element) => acc * element);
 }`
 
 
-        return [ methodCalculator, methodMulti];
+        return [methodCalculator, methodMulti];
 
     }
 
@@ -231,7 +236,7 @@ return numbers.reduce((acc, element) => acc * element);
         const diagonalIndexes = [...new Array(20)].map((el, ind) => { return mfun.getDiagonalIndex(ind, columnlength) });
         const diagonalContent = <div><h3> Product:{diagonalResult[0]}</h3> <MatrixTable data={matrix} mark={diagonalIndexes} markSpecial={diagonalResult[1]} key={this.activeItem}></MatrixTable></div>;
         const callStack = this.getcallStackForDiagonal();
-        
+
 
         const diagonalExplanation = <Segment textAlign="left">
             <Segment>In Matlab it would have simply been creating identity matrix with equal dimensions and multiply</Segment>
@@ -240,7 +245,7 @@ return numbers.reduce((acc, element) => acc * element);
                                 The Diagonal index finder method defined in <a href="https://github.com/Renani/MatrixDiagonals/blob/master/src/main/MatrixFun.js"> MatrixFun.js</a>;
                                 <pre>{callStack[1]}</pre>
                                 This calculation method calls indexfinder and finds it's adjacent values defined in<a href="https://github.com/Renani/MatrixDiagonals/blob/master/src/main/MatrixFun.js"> MatrixFun.js</a>.
-                                This method is used for type of iteration:
+                                This method is used for all types of iteration:
                                 <pre>{callStack[2]}</pre>
                                 Seperated the actual Multiplication in a seperate method. I can imagine a situation where there will be need to change this operation. Defined in<a href="https://github.com/Renani/MatrixDiagonals/blob/master/src/main/MatrixFun.js"> MatrixFun.js</a>.
                                 <pre>{callStack[3]}</pre>
@@ -252,43 +257,77 @@ return numbers.reduce((acc, element) => acc * element);
     static getMultipleResultsContent(rowResult, matrix) {
         return rowResult.map((el, ind) => <div><h3>Number {ind}. Product:{el[0]}</h3><MatrixTable key={ind} data={matrix} markSpecial={el[1]} ></MatrixTable></div>);
     }
-    static getRowExplanation () {
+    static getRowExplanation() {
         const callStack = this.getCallStackForRowCalculation();
-        const explanation = 
-        <Segment textAlign="left"> 
-            We are calling the same method for diagionals, but now we have 20 more sets to iterate. 
+        const explanation =
+            <Segment textAlign="left">
+                We are calling the same method for diagionals, but now we have 20 more sets to iterate.
             <a href="https://github.com/Renani/MatrixDiagonals/blob/master/src/App.js" >App.js</a>.
             <pre>{callStack[0]}</pre>
-            <a href="https://github.com/Renani/MatrixDiagonals/blob/master/src/main/MatrixFun.js"> MatrixFun.js</a> 
+                <a href="https://github.com/Renani/MatrixDiagonals/blob/master/src/main/MatrixFun.js"> MatrixFun.js</a>
             we have a method to create array of the first indexes. To get index of a row for a column we just have to add the column offset.
             <pre>{callStack[1]}</pre>
             This calculation method calls indexfinder and finds it's adjacent values defined in
-            <a href="https://github.com/Renani/MatrixDiagonals/blob/master/src/main/MatrixFun.js"> MatrixFun.js</a>.This method is used for type of iteration:
+            <a href="https://github.com/Renani/MatrixDiagonals/blob/master/src/main/MatrixFun.js"> MatrixFun.js</a>.This method is used for all types of iteration:
             <pre>{callStack[2]}</pre>
-            Seperated the actual Multiplication in a seperate method. 
-            I can imagine a situation where there will be need to change this operation. 
+            Seperated the actual Multiplication in a seperate method.
+            I can imagine a situation where there will be need to change this operation.
             Defined in<a href="https://github.com/Renani/MatrixDiagonals/blob/master/src/main/MatrixFun.js"> MatrixFun.js</a>.
             <pre>{callStack[3]}</pre>
-        </Segment>
+            </Segment>
         return explanation;
     }
 
-    static getColumnExplanation () {
+    static getColumnExplanation() {
         const callStack = this.getCallStackForColumnCalculation();
-        const explanation = 
-        <Segment textAlign="left"> 
-            Simple iteration like we did for rows, but much simpler now that values are in rows. No need for a separate index finder method here; we can define it directly in this method.
+        const explanation =
+            <Segment textAlign="left">
+                Simple iteration like we did for rows, but much simpler now that values are in rows. No need for a separate index finder method here; we can define it directly in this method.
             <a href="https://github.com/Renani/MatrixDiagonals/blob/master/src/App.js" >App.js</a>.
             <pre>{callStack[0]}</pre>
             This calculation method calls indexfinder and finds it's adjacent values defined in
-            <a href="https://github.com/Renani/MatrixDiagonals/blob/master/src/main/MatrixFun.js"> MatrixFun.js</a>.This method is used for type of iteration:
+            <a href="https://github.com/Renani/MatrixDiagonals/blob/master/src/main/MatrixFun.js"> MatrixFun.js</a>.This method is used for all types of iteration:
             <pre>{callStack[2]}</pre>
-            Seperated the actual Multiplication in a seperate method. 
-            I can imagine a situation where there will be need to change this operation. 
+            Seperated the actual Multiplication in a seperate method.
+            I can imagine a situation where there will be need to change this operation.
             Defined in<a href="https://github.com/Renani/MatrixDiagonals/blob/master/src/main/MatrixFun.js"> MatrixFun.js</a>.
             <pre>{callStack[3]}</pre>
-        </Segment>
+            </Segment>
         return explanation;
+    }
+
+    static getSummaryContent(maxResult) {
+
+        let maxContent = <Container textAlign="center">
+            {maxResult}
+        </Container>
+
+        return maxContent;
+    }
+
+    static getSummaryExplanation() {
+        let calculation = "[...rowResult.map(el => el[0]), ...columnResult.map(el => el[0]), diagonal[0], antiDiagonal[0]].reduce((ac, el) => ac < el ? el : ac);";
+        let expl = <Container textAlign="left">
+            <p>In this document we have looked into one way iterate through a matrix along all the straight lines to find 4 numbers, which when multiplied produces the greates value.
+            The iteration methods have been based on modern Javascript language and the goal was to create it as smallest and readable as possible,
+            and at the same time transferable to other languages. I should mention that there were times where I missed the "colon" operator of Matlab (which has later been copied by Python).
+                  </p>
+            <p>
+                For the visualization I have used React, Semantic and D3JS.
+                These framework provides easy mean of interaction and D3Js provides means of visualization. Mike Bostock has done great work at showcasing the capabilities of D3Js and I do love the make data more beautiful initiavies.
+                  </p>
+            <p>
+                I should mention that for more advanced project I prefer to use the Java language. I feel that with languages that do not have Objects and strict types there are always potential chances to create informal and undocumented structures
+                that will steal your time. Of course a great argument for using Java is the great support for integration into enterprise infrastructure. However, I cannot deny the simplicity of the latest syntax in more functional languages when it comes to processing data(although Javascript is neither functional or Object-oriented).
+                This has been a small project to look into what Javascript can offer, and also learn more about React and D3js.
+                  </p>
+            <p>
+                My Github contains other projects where I have looked into other aspects, and I plan to add a small Kotlin project soon.
+            </p>
+                The final result is calculated by combining results from all the straight lines, map and then reduce using a compare function.
+                <pre>{calculation}</pre>
+        </Container>
+        return expl;
     }
 
 

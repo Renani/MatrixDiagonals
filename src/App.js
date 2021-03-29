@@ -8,14 +8,18 @@ import MatrixVisualization from './main/MatrixVisualization'
 import {
   Grid,
   Menu,
-  Card,
-  Image,
-  Container
+  
+  Button
+  
 } from 'semantic-ui-react';
 class App extends React.Component {
 
   constructor(props) {
     super(props)
+    this.buttonUp=React.createRef();
+    this.buttonDown = React.createRef();
+    this.menues = React.createRef();
+
     let text = "08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08\n" +
       "49 49 99 40 17 81 18 57 60 87 17 40 98 43 69 48 04 56 62 00\n" +
       "81 49 31 73 55 79 14 29 93 71 40 67 53 88 30 03 49 13 36 65\n" +
@@ -71,24 +75,9 @@ class App extends React.Component {
 
 
     let maxResult = [...rowResult.map(el => el[0]), ...columnResult.map(el => el[0]), diagonal[0], antiDiagonal[0]].reduce((ac, el) => ac < el ? el : ac);
+    const summaryContent = MatrixVisualization.getSummaryContent (maxResult)
+    const summaryExplanation = MatrixVisualization.getSummaryExplanation();
 
-
-    let maxContent = <Container textAlign="center"> <Card>
-      <Image src='https://www.flaticon.com/svg/vstatic/svg/261/261992.svg?token=exp=1616746093~hmac=1da234452297d55dfca6fe21e1ccca32' wrapped ui={false} />
-      <Card.Content>
-        <Card.Header>Max of four</Card.Header>
-        <Card.Meta>
-          <span className='date'>diagonally, antiDiagonally, row-wise and columnwise...</span>
-        </Card.Meta>
-        <Card.Description>
-          {maxResult}
-        </Card.Description>
-      </Card.Content>
-      <Card.Content extra>
-
-      </Card.Content>
-    </Card>
-    </Container>
     this.state = {
       data: matrix,
       columnlength: columnlength,
@@ -101,7 +90,9 @@ class App extends React.Component {
       rowExplanation: rowExplanation,
       colContent: colContent,
       colExplanation: colExplanation,
-      summaryContent: maxContent
+      summaryContent: summaryContent,
+      summaryExplanation: summaryExplanation
+
     };
 
   }
@@ -151,16 +142,23 @@ class App extends React.Component {
 
   //React lifecycle method. Ignore
   componentDidMount() {
-    console.debug("this.menus", this.menues);
-    this.menues.scrollIntoView();
-
+   this.menues.current.scrollIntoView({ "behavior": "smooth", "block": "start" });
   }
   //React lifecycle method. Ignore
   componentDidUpdate() {
-    this.menues.scrollIntoView({ "behavior": "smooth", "block": "start" });
+     this.buttonDown.current.scrollIntoView({ "behavior": "smooth", "block": "start" });;
   }
+  
+
   handleItemClick = (e, { name }) => {
     this.setState({ activeItem: name })
+  }
+  handleScrollUp = (e, { name }) => {
+    this.buttonDown.current.scrollIntoView({ "behavior": "smooth", "block": "start" });;
+  }
+
+  handleScrollDown = (e, { name }) => {
+    this.buttonUp.current.scrollIntoView({ "behavior": "smooth", "block": "start" });;
   }
 
   render() {
@@ -186,10 +184,12 @@ class App extends React.Component {
         break;
       case "Summary":
         content = this.state.summaryContent;
-        
+        explanation = this.state.summaryExplanation;
         break;
-      default: content = "";
+      default: ;
     }
+    const upButton =<div ref={this.buttonUp}> <Button icon="angle double up"  onClick={this.handleScrollUp}  ></Button></div>
+    const downButton =<div ref={this.buttonDown}> <Button icon="angle double down"  onClick={this.handleScrollDown} ></Button></div>
     return (
       <div className="App">
 
@@ -199,21 +199,25 @@ class App extends React.Component {
 
         <div className="App-body">
 
+          {content ? downButton : ""}
 
-
-          <Grid columns={2}  divided doubling stackable>
+          <Grid columns={2} doubling stackable>
             <Grid.Column>
+
               {content}
+
             </Grid.Column>
 
             <Grid.Column >
-            
+
               {explanation}
-              
 
             </Grid.Column>
-            <Grid.Column>
-            <div ref={el => this.menues = el}>
+
+          </Grid>
+
+          <div ref={this.menues}>
+            {content ? upButton : ""}
             <Menu attached='bottom' tabular>
               <Menu.Item
                 name='Diagonal'
@@ -258,9 +262,8 @@ class App extends React.Component {
             </Menu>
           </div>
 
-            </Grid.Column>
-          </Grid>
-        
+
+
         </div>
       </div>
     );
